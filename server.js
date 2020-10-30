@@ -6,11 +6,13 @@ const methodOverride  = require('method-override');
 const mongoose = require ('mongoose');
 const app = express ();
 const db = mongoose.connection;
+
 //___________________
 //Port
 //___________________
 // Allow use of Heroku's port or your own local port, depending on the environment
 const PORT = process.env.PORT || 3000;
+
 //___________________
 //Database
 //___________________
@@ -46,6 +48,7 @@ app.use(express.urlencoded({ extended: false }));// extended: false - does not a
 app.use(express.json());// returns middleware that only parses JSON - may or may not need it depending on your project
 //use method override
 app.use(methodOverride('_method'));// allow POST, PUT and DELETE from a form
+
 //___________________
 // Routes
 //___________________
@@ -53,6 +56,10 @@ app.use(methodOverride('_method'));// allow POST, PUT and DELETE from a form
 app.get('/' , (req, res) => {
   res.send('Hello World!');
 });
+
+// Include controllers
+app.use('/contacts', require('./controllers/contactController'));
+
 //___________________
 //Listener
 //___________________
