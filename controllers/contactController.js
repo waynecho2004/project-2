@@ -8,8 +8,10 @@ router.get('/new', (req, res) => {
 });
 
 // Create a new contact
-router.post('/', (req, res) => {
-    res.send(req.body);
+router.post('/', async (req, res) => {
+    let contact = await Contact.create(req.body);
+    // Test only: to verify if id and timestamp are generated as indication of successful insert in db
+    res.send(contact)
 });
 
 module.exports = router;
