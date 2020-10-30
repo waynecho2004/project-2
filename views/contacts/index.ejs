@@ -1,0 +1,9 @@
+<h3>Contacts</h3>
+<ul>
+  <% for (let contact of contacts ) { %>
+      <li>
+        <a href="/contacts/<%=contact._id%>">
+          <%= contact.firstName %>
+      </li>
+   <% } %>
+</ul>
