@@ -33,4 +33,25 @@ router.post('/', async (req, res) => {
     res.redirect('/contacts');
 });
 
+// Edit page
+router.get('/:id/edit', async (req, res) => {
+    const id = req.params.id;
+    await Contact.findById(id, (error, foundContact) => {
+        if (error) res.send(error)
+        res.render('contacts/edit.ejs', {
+            contact: foundContact,
+        })
+    });
+})
+
+// Update the contact to db
+router.put('/:id', async (req, res) => {
+    const id = req.params.id;
+    const updatedContact = req.body;
+    await Contact.findByIdAndUpdate(id, updatedContact, (error) => {
+        if (error) res.send(error);
+        res.redirect('/contacts');
+    });
+});
+
 module.exports = router;
