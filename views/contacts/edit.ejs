@@ -11,3 +11,16 @@
     <input type="submit" class="btn btn-primary" value="Edit">
 
 <form>
+    <h3>Add Child</h3>
+    <form action="/contacts/<%=contact.id%>/childs" method="POST">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input class="form-control" type="text" name="name" placeholder="Enter child name" required />
+        </div>
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input class="form-control" type="number" name="age" placeholder="Enter child's age" />
+        </div>
+        <input type="submit" class="btn btn-primary" value="Save">
+    <form>
+    

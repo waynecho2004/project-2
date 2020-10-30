@@ -63,4 +63,20 @@ router.delete('/:id',  async (req, res) => {
     });
 });
 
+// Create Child Embedded in Contact
+router.post('/:contactId/childs', (req, res) => {
+    //  console.log(req.body);
+    const newChild = new Child(
+        { 
+            name: req.body.name,
+            age: req.body.age
+        });
+    Contact.findById(req.params.contactId, (error, foundContact) => {
+        foundContact.children.push(newChild);
+        foundContact.save((err, updatedContact) => {
+            res.redirect(`/contacts/${updatedContact.id}`);
+        });
+    });
+})
+
 module.exports = router;

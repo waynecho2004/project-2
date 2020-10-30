@@ -1,12 +1,29 @@
 <h3>Contact Detail</h3>
+<a href="/contacts">Contacts</a>
 <div>
     <p>
         <label for="firstName">First Name: </label>
         <%=contact.firstName%>
     </p>
     <p>
-        <label for="phone">Telephon: </label>
+        <label for="phone">Telephone: </label>
         <%=contact.phone%>
     </p>
 </div>
-<a href="/contacts">Contacts</a>
+<% if (contact.children.length > 0) { %>
+<h4>Children</h4>
+<ul>
+<% for (let child of contact.children ) { %>
+    <li>
+        <%= child.name %>
+        <% if (child.age) { %>
+            (Age: <%= child.age %>)
+        <% } %>
+
+    </li>
+
+    <% } %>
+</ul>
+<% } %>
+
+
