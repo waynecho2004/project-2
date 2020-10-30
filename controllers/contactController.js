@@ -54,4 +54,13 @@ router.put('/:id', async (req, res) => {
     });
 });
 
+// Delete contact
+router.delete('/:id',  async (req, res) => {
+    const id = req.params.id;
+    await Contact.findByIdAndRemove(id, (error) => {
+        if (error) res.send(error);
+        res.redirect('/contacts');
+    });
+});
+
 module.exports = router;
