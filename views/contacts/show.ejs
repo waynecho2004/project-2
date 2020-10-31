@@ -11,19 +11,17 @@
     </p>
 </div>
 <% if (contact.children.length > 0) { %>
-<h4>Children</h4>
-<ul>
-<% for (let child of contact.children ) { %>
-    <li>
-        <%= child.name %>
-        <% if (child.age) { %>
-            (Age: <%= child.age %>)
-        <% } %>
-
-    </li>
-
+    <h4>Children</h4>
+    <ul>
+    <% for (let child of contact.children ) { %>
+        <li>
+            <%= child.name %>
+            <% if (child.age) { %>
+                (Age: <%= child.age %>)
+            <% } %>
+        </li>
     <% } %>
-</ul>
+    </ul>
 <% } %>
 
 
