@@ -64,8 +64,8 @@ router.delete('/:id',  async (req, res) => {
 });
 
 // Create Child Embedded in Contact
-router.post('/:contactId/childs', async (req, res) => {
-    //  console.log(req.body);
+router.post('/:contactId/children', async (req, res) => {
+    console.log(req.body);
     const newChild = new Child(
         { 
             name: req.body.name,
@@ -73,17 +73,27 @@ router.post('/:contactId/childs', async (req, res) => {
         });
     await Contact.findById(req.params.contactId, (error, foundContact) => {
         foundContact.children.push(newChild);
+        console.log(foundContact.children);
         foundContact.save((err, updatedContact) => {
             res.redirect(`/contacts/${updatedContact.id}`);
         });
     });
-})
+});
 
 // Delete child embedded in contact
 router.delete('/:contactId/children/:childId', (req, res) => {
     const contactId = req.params.contactId;
     const childId = req.params.childId;
     console.log('Delete Child ' + contactId + ', childId: ' + childId);
-})
+
+    Contact.findById(contactId, (error, foundContact) => {
+        // find child embedded in contact
+        foundContact.children.id(childId).remove();
+        // update contact with the removed child
+        foundContact.save((error, savedContact) => {
+            res.redirect(`/contacts/${savedContact.id}`);
+        });
+    });
+});
 
 module.exports = router;

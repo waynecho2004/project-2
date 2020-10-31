@@ -21,15 +21,12 @@
                 (Age: <%= child.age %>)
             <% } %>
         </li>
-        <form action="/contacts/<%=contact.id%>/children/<%=child.id%>?_method=DELETE" method="POST">
-            <input type="submit" class="btn btn-primary" value="DELETE">
-        <form>
     <% } %>
     </ul>
 <% } %>
 
 <h3>Add Child</h3>
-<form action="/contacts/<%=contact.id%>/childs" method="POST">
+<form action="/contacts/<%=contact.id%>/children" method="POST">
     <div class="form-group">
         <label for="name">Name</label>
         <input class="form-control" type="text" name="name" placeholder="Enter child name" required />

@@ -1,5 +1,4 @@
-<h3>Contact Detail</h3>
-<a href="/contacts">Contacts</a>
+<h3><%=contact.firstName%> <%=contact.lastName%> Detail</h3>
 <div>
     <p>
         <label for="firstName">First Name: </label>
@@ -20,6 +19,9 @@
                 (Age: <%= child.age %>)
             <% } %>
         </li>
+        <form action="/contacts/<%=contact.id%>/children/<%=child.id%>?_method=DELETE" method="POST">
+            <input type="submit" class="btn btn-primary" value="DELETE">
+        <form>
     <% } %>
     </ul>
 <% } %>
