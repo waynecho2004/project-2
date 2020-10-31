@@ -1,0 +1,12 @@
+<h3>Edit Child</h3>
+<form action="/contacts/<%=contact.id%>/children/<%=child.id%>?_method=PUT" method="POST">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input class="form-control" type="text" name="name" value="<%= child.name %>" required />
+    </div>
+    <div class="form-group">
+        <label for="age">Age</label>
+        <input class="form-control" type="number" name="age" value="<%= child.age %>" />
+    </div>
+    <input type="submit" class="btn btn-primary" value="Update">
+<form>
