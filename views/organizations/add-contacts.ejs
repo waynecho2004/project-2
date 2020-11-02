@@ -1,7 +1,7 @@
 <h3><%=organization.name%></h3>
 <form action="/organizations/<%=organization.id%>/contacts?_method=PUT" method="POST">
     <% contacts.forEach(contact => { %>
-        <input type="checkbox" name="contacts" value="<%= contact.id %>" />
+        <input type="checkbox" name="contacts" value="<%=contact.id%>" />
         <label for="<%= contact.firstName %>"><%= contact.firstName %></label><br />
     <% })%>
     <input type="submit" value="Add Contacts" />

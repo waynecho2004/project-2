@@ -104,5 +104,51 @@ router.put('/:id/contacts', async (req, res) => {
 
 });
 
+// Show contacts that can add to organization
+router.get('/:id/contacts/remove', async (req, res) => {
+    const id = req.params.id;
+    let allContacts = await Contact.find({});
+    let foundOrg = await Organization.findById(id).populate({
+        path: 'contacts',
+        options: { sort: { ['firstName']: 1 } },
+    });
+
+    res.render('organizations/remove-contacts.ejs', {
+        organization: foundOrg,
+    });
+
+});
+
+// Remove contacts from organization
+router.delete('/:id/contacts', async (req, res) => {
+    const orgId = req.params.id;
+    const contactsForRemoval = req.body.contacts;
+
+    let foundOrg = await Organization.findById(orgId).populate({
+        path: 'contacts',
+        options: { sort: { ['firstName']: 1} },
+    });
+    let existingContactIds = foundOrg.contacts.map(e => String(e._id));
+
+    // filter to find available contacts not associated with this organization
+    let filtedContacts = existingContactIds.filter(id => {
+        if (!contactsForRemoval.includes(id)) {
+            return id;
+        }
+    });
+
+    try {
+        let foundOrg = await Organization.findByIdAndUpdate(orgId);
+        foundOrg.contacts = filtedContacts;
+        foundOrg.save((error, savedOrg) => {
+            res.redirect(`/organizations/${foundOrg.id}`);
+        });
+    } catch (error) {
+        res.send(error);
+    }
+
+
+});
+
 
 module.exports = router;
