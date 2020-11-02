@@ -33,4 +33,25 @@ router.get('/:id', async (req, res) => {
     });
 });
 
+// Edit page
+router.get('/:id/edit', async (req, res) => {
+    const id = req.params.id;
+    await Organization.findById(id, (error, foundOrg) => {
+        if (error) res.send(error)
+        res.render('organizations/edit.ejs', {
+            organization: foundOrg,
+        });
+    });
+});
+
+// Update the organization to db
+router.put('/:id', async (req, res) => {
+    const id = req.params.id;
+    const updatedOrg = req.body;
+    await Organization.findByIdAndUpdate(id, updatedOrg, (error) => {
+        if (error) res.send(error);
+        res.redirect('/organizations');
+    });
+});
+
 module.exports = router;

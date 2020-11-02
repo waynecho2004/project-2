@@ -1,0 +1,9 @@
+<h3>Organization Detail</h3>
+<form action="/organizations/<%=organization.id%>?_method=PUT" method="POST">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input class="form-control" type="text" name="name" aria-describedby="nameHelp"  value="<%=organization.name%>"" required />
+    </div>
+    <input type="submit" class="btn btn-primary" value="Submit">
+    <a class="btn btn-primary" href="/organizations">Back</a>
+<form>

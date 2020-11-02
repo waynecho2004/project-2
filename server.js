@@ -74,7 +74,7 @@ app.get('/' , (req, res) => {
 
 // Include controllers
 app.use('/contacts', require('./controllers/contactController'));
-app.use('/organizations', require('./controllers/organizationController'))
+app.use('/organizations', require('./controllers/organizationController'));
 
 //___________________
 //Listener
