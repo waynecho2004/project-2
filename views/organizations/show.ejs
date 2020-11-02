@@ -5,3 +5,13 @@
         <%=organization.name%>
     </p>
 </div>
+<% if (organization.contacts.length > 0) { %>
+    <h4>Contacts</h4>
+    <ul>
+    <% organization.contacts.forEach(contact => { %>
+        <li>
+            <%= contact.firstName%> <% contact.lastName %> (Phone: <%=contact.phone%>) 
+        </li>
+    <% }) %>
+    </ul>
+<% } %>

@@ -1,0 +1,18 @@
+<h3><%=organization.name%></h3>
+<form action="/organizations/<%=organization.id%>/contacts?_method=PUT" method="POST">
+    <% contacts.forEach(contact => { %>
+        <input type="checkbox" name="contacts" value="<%= contact.id %>" />
+        <label for="<%= contact.firstName %>"><%= contact.firstName %></label><br />
+    <% })%>
+    <input type="submit" value="Add Contacts" />
+<form>
+<% if (organization.contacts.length > 0) { %>
+    <h4>Contacts</h4>
+    <ul>
+    <% organization.contacts.forEach(contact => { %>
+        <li>
+            <%= contact.firstName%>
+        </li>
+    <% }) %>
+    </ul>
+<% } %>
