@@ -3,8 +3,8 @@ const router = require('express').Router();
 const { Contact, Child } = require('../models/contact');
 
 // Index
-router.get('/', (req, res) => {
-    Contact.find({}, (err, allContacts) => {
+router.get('/', async (req, res) => {
+    await Contact.find({}, (err, allContacts) => {
         res.render('contacts/index.ejs', {
             contacts: allContacts,
         })
@@ -93,6 +93,44 @@ router.delete('/:contactId/children/:childId', (req, res) => {
         foundContact.save((error, savedContact) => {
             res.redirect(`/contacts/${savedContact.id}`);
         });
+    });
+});
+
+// Edit Child Form - edit child embedded in a contact
+router.get('/:contactId/children/:childId/edit', (req, res) => {
+    const contactId = req.params.contactId;
+    const childId = req.params.childId;
+
+    // find contact by contact id
+    Contact.findById(contactId, (error, foundContact) => {
+        // find child embedded in contact
+        const foundChild = foundContact.children.id(childId);
+        // edit child's detail in the edit form
+        res.render('contacts/edit-child.ejs', { 
+            contact: foundContact, 
+            child: foundChild,
+        });
+    });
+});
+
+// Update child embedded in a contact
+router.put('/:contactId/children/:childId', (req, res) => {
+    const contactId = req.params.contactId;
+    const childId = req.params.childId;
+    const childName = req.body.name;
+    const childAge = req.body.age;
+
+    console.log('childName: ' + childName);
+
+    // find contact by contact id
+    Contact.findById(contactId, (error, foundContact) => {
+        // find child embedded in contact
+        const foundChild = foundContact.children.id(childId);
+        foundChild.name = childName;
+        foundChild.age = childAge;
+        foundContact.save((error, savedContact) => {
+            res.redirect(`/contacts/${foundContact.id}`);
+        })
     });
 });
 
