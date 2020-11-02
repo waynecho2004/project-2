@@ -25,7 +25,10 @@ router.post('/', async (req, res) => {
 // Show Organization Detail
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
-    let foundOrg = await Organization.findById(id).populate('contacts');
+    let foundOrg = await Organization.findById(id).populate({
+        path: 'contacts',
+        options: { sort: { ['firstName']: 1} },
+    });
 
     res.render('organizations/show.ejs', {
         organization: foundOrg,
@@ -35,7 +38,10 @@ router.get('/:id', async (req, res) => {
 // Edit page
 router.get('/:id/edit', async (req, res) => {
     const id = req.params.id;
-    let foundOrg = await Organization.findById(id).populate('contacts');
+    let foundOrg = await Organization.findById(id).populate({
+        path: 'contacts',
+        options: { sort: { ['firstName']: 1} },
+    });
 
     res.render('organizations/edit.ejs', {
         organization: foundOrg,
@@ -56,11 +62,10 @@ router.put('/:id', async (req, res) => {
 router.get('/:id/contacts/new', async (req, res) => {
     const id = req.params.id;
     let allContacts = await Contact.find({});
-
-
-    let foundOrg = await Organization.findById(id).populate('contacts');
-   // let foundOrg = await Organization.findById(id).populate('contact', 'firstName').exec();
-   console.log(foundOrg)
+    let foundOrg = await Organization.findById(id).populate({
+        path: 'contacts',
+        options: { sort: { ['firstName']: 1} },
+    });
 
     // filter to find available contacts not associated with this organization
     let filtedContacts = allContacts.filter(contact => {
