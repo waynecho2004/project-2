@@ -8,10 +8,10 @@
         <label for="description">Description</label>
         <textarea maxlength="100" class="form-control" id="description" name="description" rows="3" value="<%=organization.description%>"></textarea>
     </div> 
-    <input type="submit" class="btn btn-primary" value="Save">
-    <a class="btn btn-primary" href="/organizations">Back</a>
-    <a class="btn btn-primary" href="/organizations/<%=organization.id%>/contacts/new">Add Contacts</a>
-    <a class="btn btn-primary" href="/organizations/<%=organization.id%>/contacts/remove">Remove Contacts</a>
+    <input type="submit" class="btn btn-primary btn-sm" value="Save">
+    <a class="btn btn-secondary btn-sm" href="/organizations/<%=organization.id%>/contacts/new">Add Contacts</a>
+    <a class="btn btn-secondary btn-sm" href="/organizations/<%=organization.id%>/contacts/remove">Remove Contacts</a>
+    <a class="btn btn-secondary btn-sm" href="/organizations">Back</a>
 <form>
 
 <% if (organization.contacts.length > 0) { %>

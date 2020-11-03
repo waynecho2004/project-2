@@ -1,4 +1,4 @@
-<h3>Contacts <a class="btn btn-primary" href="/contacts/new">Add</a></h3>
+<h3>Contacts <a class="btn btn-secondary btn-sm" href="/contacts/new">Add</a></h3>
 
 <table class="table">
   <caption>List of contacts</caption>
@@ -35,13 +35,13 @@
         <%=contact.street%>, <%=contact.city%>, <%=contact.state%> <%=contact.zipcode%>
       </td>                     
       <td>
-        <a class="btn btn-primary" href="/contacts/<%=contact._id%>/edit">
+        <a class="btn btn-secondary btn-sm" href="/contacts/<%=contact._id%>/edit">
           Edit
         </a>
       </td>
       <td>
         <form action="/contacts/<%=contact.id%>?_method=DELETE" method="POST">
-          <input type="submit" class="btn btn-success" value="DELETE">
+          <input type="submit" class="btn btn-danger btn-sm" value="DELETE">
         </form>
       </td>
     </tr>

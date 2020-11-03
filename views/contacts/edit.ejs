@@ -1,4 +1,4 @@
-<h3>Contact Edit</h3>
+<h3>Contact Edit Page</h3>
 <form action="/contacts/<%=contact.id%>?_method=PUT" method="POST">
     <div class="form-row">
         <div class="form-group col-md-6">
@@ -36,10 +36,11 @@
             <input class="form-control" type="text" name="zipcode" value="<%=contact.zipcode%>"/>
         </div>             
     </div>
-    <input type="submit" class="btn btn-primary" value="Save Contact">
-    <a class="btn btn-primary" data-toggle="collapse" href="#addchild" role="button" aria-expanded="false" aria-controls="addchild">
+    <input type="submit" class="btn btn-primary btn-sm" value="Save Contact">
+    <a class="btn btn-secondary btn-sm" data-toggle="collapse" href="#addchild" role="button" aria-expanded="false" aria-controls="addchild">
         Add Child
     </a>
+    <a class="btn btn-secondary btn-sm" href="/contacts">Back</a>
 </form>
 
 <div class="collapse" id="addchild">
@@ -47,13 +48,14 @@
     <form action="/contacts/<%=contact.id%>/children" method="POST">
         <div class="form-group">
             <label for="name">Name</label>
-            <input class="form-control" type="text" name="name" placeholder="Enter child name" required />
+            <input class="form-control" type="text" name="name" placeholder="Enter child's name" required />
         </div>
         <div class="form-group">
             <label for="age">Age</label>
             <input class="form-control" type="number" name="age" placeholder="Enter child's age" />
         </div>
-        <input type="submit" class="btn btn-primary" value="Save Child">
+        <input type="submit" class="btn btn-primary btn-sm" value="Save Child">
+        
     <form>
 </div>
 

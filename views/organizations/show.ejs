@@ -1,17 +1,16 @@
-<h3><%=organization.name%> Detail</h3>
-<div>
-    <p>
-        <label for="name">Name: </label>
-        <%=organization.name%>
-    </p>
-</div>
-<% if (organization.contacts.length > 0) { %>
-    <h4>Contacts</h4>
-    <ul>
-    <% organization.contacts.forEach(contact => { %>
-        <li>
-            <%= contact.firstName%> <% contact.lastName %> (Phone: <%=contact.phone%>) 
-        </li>
-    <% }) %>
-    </ul>
-<% } %>
+<h3><%=organization.name%> Contacts <a class="btn btn-secondary btn-sm" href="/organizations">Back</a></h3>  
+
+<fieldset class="scheduler-border">
+    <legend class="scheduler-border">Contacts</legend>
+
+    <% if (organization.contacts.length > 0) { %>
+        <ul>
+        <% organization.contacts.forEach(contact => { %>
+            <li>
+                <%= contact.firstName%> <% contact.lastName %> (Phone: <%=contact.phone%>) 
+            </li>
+        <% }) %>
+        </ul>
+    <% } %>
+
+</fieldset>
