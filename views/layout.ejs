@@ -6,12 +6,14 @@
     <%- include ('partials/head.ejs') %>
 </head>
 <body>
-    <nav>
-        <%- include ('partials/nav-user.ejs') %>
-    </nav>
-    <main>
-        <%- body %>
-    </main>
-    <%- include ('partials/foot.ejs') %>
+    <%- include ('partials/nav-user.ejs') %>
+
+    <div class="container">
+
+        <main>
+            <%- body %>
+        </main>
+        <%- include ('partials/foot.ejs') %>
+    </div>
 </body>
 </html>

@@ -1,0 +1,9 @@
+/* General */
+
+/* CONTAINERS */
+.container {
+    background: lightblue;
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+}
