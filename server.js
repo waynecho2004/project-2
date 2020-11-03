@@ -50,6 +50,13 @@ db.on('open' , ()=>{});
 //___________________
 //Middleware
 //___________________
+app.use(
+  session({
+    secret: process.env.SECRET, //a random string do not copy this value or your stuff will get hacked
+    resave: false, // default more info: https://www.npmjs.com/package/express-session#resave
+    saveUninitialized: false // default  more info: https://www.npmjs.com/package/express-session#resave
+  })
+)
 //use public folder for static assets
 app.use(express.static('public'));
 // populates req.body with parsed info from forms - if no data from forms will return an empty object {}
@@ -73,6 +80,7 @@ app.get('/' , (req, res) => {
 // Include controllers
 app.use('/contacts', require('./controllers/contactController'));
 app.use('/organizations', require('./controllers/organizationController'));
+app.use('/users', require('./controllers/users_controller.js'))
 
 //___________________
 //Listener
