@@ -6,6 +6,7 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
+      <th scope="col">Description</th>
       <th scope="col"></th>
       <th scope="col"></th>
     </tr>
@@ -21,6 +22,9 @@
           <%=organization.name%>
         </a>
       </td>
+      <td>
+        <%=organization.description%>
+      </td> 
       <td>
         <a class="btn btn-primary" href="/organizations/<%=organization._id%>/edit">
           Edit
