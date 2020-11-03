@@ -80,7 +80,8 @@ app.get('/' , (req, res) => {
 // Include controllers
 app.use('/contacts', require('./controllers/contactController'));
 app.use('/organizations', require('./controllers/organizationController'));
-app.use('/users', require('./controllers/users_controller.js'))
+app.use('/users', require('./controllers/userController.js'))
+app.use('/sessions', require('./controllers/sessionController.js'))
 
 //___________________
 //Listener
