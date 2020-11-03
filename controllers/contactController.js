@@ -14,6 +14,7 @@ const isAuthorized = (req, res, next) => {
     if (req.session.currentUser.role === 'Admin') {
       return next()
     } else {
+        message = 'You are not authorized';
       res.redirect('/contacts')
     }
 };

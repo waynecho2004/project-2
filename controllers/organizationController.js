@@ -8,7 +8,7 @@ const isAuthenticated = (req, res, next) => {
     } else {
       res.redirect('/sessions/new')
     }
-};
+  }
 
 const isAuthorized = (req, res, next) => {
     if (req.session.currentUser.role === 'Admin') {
@@ -69,6 +69,15 @@ router.put('/:id', isAuthorized, async (req, res) => {
     const id = req.params.id;
     const updatedOrg = req.body;
     await Organization.findByIdAndUpdate(id, updatedOrg, (error) => {
+        if (error) res.send(error);
+        res.redirect('/organizations');
+    });
+});
+
+// Delete Organization and all associated contacts
+router.delete('/:id', isAuthorized, async (req, res) => {
+    const id = req.params.id;
+    await Organization.findByIdAndRemove(id, (error) => {
         if (error) res.send(error);
         res.redirect('/organizations');
     });
