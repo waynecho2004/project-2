@@ -14,6 +14,14 @@ const session = require('express-session')
 const app = express ();
 const db = mongoose.connection;
 
+const isAuthenticated = (req, res, next) => {
+  if (req.session.currentUser) {
+    return next()
+  } else {
+    res.redirect('/sessions/new')
+  }
+};
+
 //___________________
 //Port
 //___________________
@@ -67,9 +75,6 @@ app.use(methodOverride('_method'));// allow POST, PUT and DELETE from a form
 //use ejs layout
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
-
-
-
 
 // Include controllers
 app.use('/contacts', require('./controllers/contactController'));

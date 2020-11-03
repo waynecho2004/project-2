@@ -38,6 +38,7 @@ router.post('/', (req, res) => {
       // now let's check if passwords match
       if (bcrypt.compareSync(req.body.password, foundUser.password)) {
         // add the user to our session
+        console.log(foundUser.role);
         req.session.currentUser = foundUser
         // redirect back to our home page
         res.redirect('/organizations')

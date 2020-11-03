@@ -2,8 +2,24 @@ const router = require('express').Router();
 // Include the module
 const { Contact, Child } = require('../models/contact');
 
+const isAuthenticated = (req, res, next) => {
+    if (req.session.currentUser) {
+      return next()
+    } else {
+      res.redirect('/sessions/new')
+    }
+  }
+
+const isAuthorized = (req, res, next) => {
+    if (req.session.currentUser.role === 'Admin') {
+      return next()
+    } else {
+      res.redirect('/contacts')
+    }
+};
+
 // Index
-router.get('/', async (req, res) => {
+router.get('/', isAuthenticated, async (req, res) => {
     await Contact.find({}, (err, allContacts) => {
         res.render('contacts/index.ejs', {
             contacts: allContacts,
@@ -12,12 +28,12 @@ router.get('/', async (req, res) => {
 })
 
 // New Form to enter contact
-router.get('/new', (req, res) => {
+router.get('/new', isAuthorized, (req, res) => {
     res.render('contacts/new.ejs');
 });
 
 // Show Contact Detail
-router.get('/:id', async (req, res) => {
+router.get('/:id', isAuthenticated, async (req, res) => {
     const id = req.params.id;
     await Contact.findById(id, (error, foundContact) => {
         if (error) res.send(error)
@@ -28,13 +44,13 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create a new contact
-router.post('/', async (req, res) => {
+router.post('/', isAuthorized, async (req, res) => {
     let contact = await Contact.create(req.body);
     res.redirect('/contacts');
 });
 
 // Edit page
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', isAuthorized, async (req, res) => {
     const id = req.params.id;
     await Contact.findById(id, (error, foundContact) => {
         if (error) res.send(error)
@@ -45,7 +61,7 @@ router.get('/:id/edit', async (req, res) => {
 })
 
 // Update the contact to db
-router.put('/:id', async (req, res) => {
+router.put('/:id', isAuthorized, async (req, res) => {
     const id = req.params.id;
     const updatedContact = req.body;
     await Contact.findByIdAndUpdate(id, updatedContact, (error) => {
@@ -55,7 +71,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete contact
-router.delete('/:id',  async (req, res) => {
+router.delete('/:id', isAuthorized, async (req, res) => {
     const id = req.params.id;
     await Contact.findByIdAndRemove(id, (error) => {
         if (error) res.send(error);
@@ -64,7 +80,7 @@ router.delete('/:id',  async (req, res) => {
 });
 
 // Create Child Embedded in Contact
-router.post('/:contactId/children', async (req, res) => {
+router.post('/:contactId/children', isAuthorized, async (req, res) => {
     console.log(req.body);
     const newChild = new Child(
         { 
@@ -81,7 +97,7 @@ router.post('/:contactId/children', async (req, res) => {
 });
 
 // Delete child embedded in contact
-router.delete('/:contactId/children/:childId', (req, res) => {
+router.delete('/:contactId/children/:childId', isAuthorized, (req, res) => {
     const contactId = req.params.contactId;
     const childId = req.params.childId;
     console.log('Delete Child ' + contactId + ', childId: ' + childId);
@@ -97,7 +113,7 @@ router.delete('/:contactId/children/:childId', (req, res) => {
 });
 
 // Edit Child Form - edit child embedded in a contact
-router.get('/:contactId/children/:childId/edit', (req, res) => {
+router.get('/:contactId/children/:childId/edit', isAuthorized, (req, res) => {
     const contactId = req.params.contactId;
     const childId = req.params.childId;
 
@@ -114,7 +130,7 @@ router.get('/:contactId/children/:childId/edit', (req, res) => {
 });
 
 // Update child embedded in a contact
-router.put('/:contactId/children/:childId', (req, res) => {
+router.put('/:contactId/children/:childId', isAuthorized, (req, res) => {
     const contactId = req.params.contactId;
     const childId = req.params.childId;
     const childName = req.body.name;

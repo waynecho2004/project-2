@@ -2,9 +2,25 @@ const router = require('express').Router();
 const Organization = require('../models/organization');
 const Contact = require('../models/contact').Contact;
 
+const isAuthenticated = (req, res, next) => {
+    if (req.session.currentUser) {
+      return next()
+    } else {
+      res.redirect('/sessions/new')
+    }
+};
+
+const isAuthorized = (req, res, next) => {
+    if (req.session.currentUser.role === 'Admin') {
+      return next()
+    } else {
+      res.redirect('/organizations')
+    }
+};
+
 // Index
-router.get('/', (req, res) => {
-    Organization.find({}, (err, allOrgs) => {
+router.get('/', isAuthenticated, async (req, res) => {
+    await Organization.find({}, (err, allOrgs) => {
         res.render('organizations/index.ejs', {
             organizations: allOrgs,
         })
@@ -12,7 +28,7 @@ router.get('/', (req, res) => {
 })
 
 // New - Form to enter new organization
-router.get('/new', (req, res) => {
+router.get('/new', isAuthorized, (req, res) => {
     res.render('organizations/new.ejs');
 });
 
@@ -36,7 +52,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Edit page
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', isAuthorized, async (req, res) => {
     const id = req.params.id;
     let foundOrg = await Organization.findById(id).populate({
         path: 'contacts',
@@ -49,7 +65,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 // Update the organization to db
-router.put('/:id', async (req, res) => {
+router.put('/:id', isAuthorized, async (req, res) => {
     const id = req.params.id;
     const updatedOrg = req.body;
     await Organization.findByIdAndUpdate(id, updatedOrg, (error) => {
@@ -59,7 +75,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Show contacts that can add to organization
-router.get('/:id/contacts/new', async (req, res) => {
+router.get('/:id/contacts/new', isAuthorized, async (req, res) => {
     const id = req.params.id;
     let allContacts = await Contact.find({});
     let foundOrg = await Organization.findById(id).populate({
@@ -83,7 +99,7 @@ router.get('/:id/contacts/new', async (req, res) => {
 });
 
 // Add contacts to organization
-router.put('/:id/contacts', async (req, res) => {
+router.put('/:id/contacts', isAuthorized, async (req, res) => {
     const orgId = req.params.id;
     const newContacts = req.body.contacts;
     
@@ -105,7 +121,7 @@ router.put('/:id/contacts', async (req, res) => {
 });
 
 // Show contacts that can add to organization
-router.get('/:id/contacts/remove', async (req, res) => {
+router.get('/:id/contacts/remove', isAuthorized, async (req, res) => {
     const id = req.params.id;
     let allContacts = await Contact.find({});
     let foundOrg = await Organization.findById(id).populate({
@@ -120,7 +136,7 @@ router.get('/:id/contacts/remove', async (req, res) => {
 });
 
 // Remove contacts from organization
-router.delete('/:id/contacts', async (req, res) => {
+router.delete('/:id/contacts', isAuthorized, async (req, res) => {
     const orgId = req.params.id;
     const contactsForRemoval = req.body.contacts;
 
