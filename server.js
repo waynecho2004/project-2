@@ -1,21 +1,18 @@
 //___________________
 //Dependencies
 //___________________
+require('dotenv').config()
 const express = require('express');
 const methodOverride  = require('method-override');
 const mongoose = require ('mongoose');
 const expressLayouts = require('express-ejs-layouts');
-const app = express ();
-const db = mongoose.connection;
+const session = require('express-session')
 
 //___________________
-//Testing Data
+//Configuration
 //___________________
-const currentUser = [
-    {
-        username: 'Tester'
-    }
-];
+const app = express ();
+const db = mongoose.connection;
 
 //___________________
 //Port
@@ -28,6 +25,7 @@ const PORT = process.env.PORT || 3000;
 //___________________
 // How to connect to the database either via heroku or locally
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/'+ 'ga-project2';
+
 // Connect to Mongo
 mongoose.connect(
     MONGODB_URI,
