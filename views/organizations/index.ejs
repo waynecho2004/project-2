@@ -1,36 +1,39 @@
 <h3>Organizations</h3>
 
 <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% for (let organization of organizations ) { %>
-      <tr>
-        <th scope="row">1</th>
-        <td>
-          <a href="/organizations/<%=organization._id%>">
-            <%=organization.name%>
-          </a>
-        </td>
-        <td>
-          <a class="btn btn-primary" href="/organizations/<%=organization._id%>/edit">
-            Edit
-          </a>
-        </td>
-        <td>
-          <form action="/organizations/<%=organization.id%>?_method=DELETE" method="POST">
-            <input type="submit" class="btn btn-success" value="DELETE">
-          </form>
-        </td>
-      </tr>
-      <% } %>
-  
-    </tbody>
+  <caption>List of organizations</caption>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for( let i = 1; i <= organizations.length; i++ ) { 
+      organization = organizations[i-1];
+    %>        
+    <tr>
+      <th scope="row"><%=i%></th>
+      <td>
+        <a href="/organizations/<%=organization._id%>">
+          <%=organization.name%>
+        </a>
+      </td>
+      <td>
+        <a class="btn btn-primary" href="/organizations/<%=organization._id%>/edit">
+          Edit
+        </a>
+      </td>
+      <td>
+        <form action="/organizations/<%=organization.id%>?_method=DELETE" method="POST">
+          <input type="submit" class="btn btn-success" value="DELETE">
+        </form>
+      </td>
+    </tr>
+    <% } %>
+
+  </tbody>
 </table>
   

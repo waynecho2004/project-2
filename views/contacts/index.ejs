@@ -1,23 +1,39 @@
 <h3>Contacts <a class="btn btn-primary" href="/contacts/new">Add</a></h3>
 
 <table class="table">
+  <caption>List of contacts</caption>
   <thead>
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
+      <th scope="col">Phone</th>
+      <th scope="col">Email</th>
+      <th scope="col">Address</th>
       <th scope="col"></th>
       <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
-    <% for (let contact of contacts ) { %>
+    
+    <% for( let i = 1; i <= contacts.length; i++ ) { 
+        contact = contacts[i-1];
+    %>
     <tr>
-      <th scope="row">1</th>
+      <td scope="row"><%=i%></td>
       <td>
         <a href="/contacts/<%=contact._id%>">
           <%=contact.firstName%> <%=contact.lastName%>
         </a>
       </td>
+      <td>
+        <%=contact.phone%>
+      </td>
+      <td>
+        <%=contact.email%>
+      </td>
+      <td>
+        <%=contact.street%>, <%=contact.city%>, <%=contact.state%> <%=contact.zipcode%>
+      </td>                     
       <td>
         <a class="btn btn-primary" href="/contacts/<%=contact._id%>/edit">
           Edit

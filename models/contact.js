@@ -12,8 +12,10 @@ const contactSchema = new mongoose.Schema(
     {
         firstName: { type: String, required: true },
         lastName: String,
-        address: String,
+        street: String,
+        city: String,
         state: String,
+        zipcode: String,
         phone: { type: String, required: true },
         email: String,
         children: [childSchema],
