@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const express = require('express')
 const router = express.Router()
-const User = require('../models/users.js')
+const User = require('../models/user')
 
 router.get('/new', (req, res) => {
   res.render('sessions/new.ejs', { currentUser: req.session.currentUser })
@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
         // add the user to our session
         req.session.currentUser = foundUser
         // redirect back to our home page
-        res.redirect('/')
+        res.redirect('/organizations')
       } else {
         // passwords do not match
         res.send('<a href="/"> password does not match </a>')
@@ -47,7 +47,7 @@ router.post('/', (req, res) => {
 
 router.delete('/', (req, res) => {
   req.session.destroy(() => {
-    res.redirect('/')
+    res.redirect('/sessions/new');
   })
 })
 
