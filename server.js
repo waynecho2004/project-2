@@ -69,19 +69,31 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 
 
-//___________________
-// Routes
-//___________________
-//localhost:3000
-app.get('/' , (req, res) => {
-  res.send('Hello World!');
-});
+
 
 // Include controllers
 app.use('/contacts', require('./controllers/contactController'));
 app.use('/organizations', require('./controllers/organizationController'));
 app.use('/users', require('./controllers/userController.js'));
 app.use('/sessions', require('./controllers/sessionController.js'));
+
+//___________________
+// Routes
+//___________________
+//localhost:3000
+/*
+app.get('/' , (req, res) => {
+  res.send('Hello World!');
+});
+*/
+
+app.get('/', (req, res) => {
+  res.render('home.ejs', 
+  { 
+      currentUser: req.session.currentUser, 
+      layout: "layout-guest"
+  });
+})
 
 //___________________
 //Listener
