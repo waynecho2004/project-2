@@ -1,4 +1,4 @@
-<h3>Organization Detail <a class="btn btn-secondary btn-sm" href="/organizations">Back</a></h3>
+<h4>Organization Detail <a class="btn btn-secondary btn-sm" href="/organizations">Back</a></h4>
 <form action="/organizations/<%=organization.id%>?_method=PUT" method="POST">
     <div class="form-group">
         <label for="name">Name</label>
@@ -14,12 +14,18 @@
 <form>
 
 <% if (organization.contacts.length > 0) { %>
-    <h4>Contacts</h4>
-    <ul>
-    <% for (let contact of organization.contacts ) { %>
-        <li>
-            <%= contact.firstName %>
-        </li>
-    <% } %>
-    </ul>
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Contacts</legend>
+    
+        <% if (organization.contacts.length > 0) { %>
+            <ul>
+            <% organization.contacts.forEach(contact => { %>
+                <li>
+                    <%= contact.firstName%> <%=contact.lastName %> (Phone: <%=contact.phone%>) 
+                </li>
+            <% }) %>
+            </ul>
+        <% } %>
+    
+    </fieldset>
 <% } %>
