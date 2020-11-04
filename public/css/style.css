@@ -1,6 +1,6 @@
 /* General */
-nav {
-    background-color: lightcoral;
+.navbar-custom { 
+    background-color: lightcoral; 
 }
 
 /* CONTAINERS */
