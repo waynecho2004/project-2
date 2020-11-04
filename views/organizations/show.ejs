@@ -1,5 +1,7 @@
 <h4><%=organization.name%> <a class="btn btn-secondary btn-sm" href="/organizations">Back</a></h4>  
-
+<blockquote>
+    <%=organization.description%>
+</blockquote>
 <% if (organization.contacts.length > 0) { %>
     <fieldset class="scheduler-border">
         <legend class="scheduler-border">Contacts</legend>
@@ -8,11 +10,15 @@
             <ul>
             <% organization.contacts.forEach(contact => { %>
                 <li>
-                    <%= contact.firstName%> <%=contact.lastName %> (Phone: <%=contact.phone%>) 
+                    <a href="/contacts/<%=contact._id%>">
+                        <%=contact.firstName%> <%=contact.lastName%>
+                    </a> (Phone: <%=contact.phone%>) 
                 </li>
             <% }) %>
             </ul>
         <% } %>
     
     </fieldset>
+<% } else { %>
+    ~ No contacts ~
 <% } %>

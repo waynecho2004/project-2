@@ -41,7 +41,7 @@ router.post('/', (req, res) => {
         console.log(foundUser.role);
         req.session.currentUser = foundUser
         // redirect back to our home page
-        res.redirect('/organizations')
+        res.redirect('/contacts')
       } else {
         // passwords do not match
         res.send('<a href="/"> password does not match </a>')

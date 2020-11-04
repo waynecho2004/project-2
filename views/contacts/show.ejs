@@ -41,8 +41,8 @@
     </div>
 </fieldset>
 
-
-<fieldset class="scheduler-border">
+<% if (contact.children.length > 0) { %>
+  <fieldset class="scheduler-border">
     <legend class="scheduler-border">Children</legend>
 
     <% for (let child of contact.children ) { %>
@@ -65,6 +65,6 @@
             </div>   
         </div>
     <% } %>
-</fieldset>
-
+  </fieldset>
+  <% } %>
 

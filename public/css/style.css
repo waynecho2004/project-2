@@ -17,6 +17,11 @@ body {
     color: #ffffff !important;  /*  I needed the !important to override bootstrap. */
 }
 
+.dropdown-item:hover {
+    background-color: blue;
+    color: white;
+}
+
 /* CONTAINERS */
 .container {
     /* background: lightgray; */
