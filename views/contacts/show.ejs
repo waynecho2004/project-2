@@ -46,19 +46,19 @@
     <legend class="scheduler-border">Children</legend>
 
     <% for (let child of contact.children ) { %>
-        <div class="form-row">
-            <div class="form-group col-md-2">
+        <div class="row">
+            <div class="col-6 col-md-2">
                 <%= child.name %>
                 <% if (child.age) { %>
                     (Age: <%= child.age %>)
                 <% } %>
                 </div>
-            <div class="form-group col-md-1">
+            <div class="col-3 col-md-1">
                 <form action="/contacts/<%=contact.id%>/children/<%=child.id%>?_method=DELETE" method="POST">
                     <input type="submit" class="btn btn-danger btn-sm" value="DELETE">
                 <form>
                 </div>
-            <div class="form-group col-md-1">
+            <div class="col-2 col-md-1">
                 <a class="btn btn-secondary btn-sm" href="/contacts/<%=contact._id%>/children/<%=child.id%>/edit">
                     Edit
                 </a>   
