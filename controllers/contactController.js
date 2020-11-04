@@ -19,9 +19,11 @@ const isAuthorized = (req, res, next) => {
     }
 };
 
+
+
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
-    await Contact.find({}, (err, allContacts) => {
+    await Contact.find().sort( { firstName: 'asc'}).exec((err, allContacts) => {
         res.render('contacts/index.ejs', {
             contacts: allContacts,
         })

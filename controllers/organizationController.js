@@ -20,7 +20,7 @@ const isAuthorized = (req, res, next) => {
 
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
-    await Organization.find({}, (err, allOrgs) => {
+    await Organization.find().sort( { name: 'asc'}).exec((err, allOrgs) => {
         res.render('organizations/index.ejs', {
             organizations: allOrgs,
         })
