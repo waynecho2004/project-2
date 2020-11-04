@@ -1,14 +1,27 @@
 /* General */
+body {
+    background: white;
+}
+/* navbar */
 .navbar-custom { 
-    background-color: lightcoral; 
+    background-color: black; 
+}
+.navbar-brand {
+    color: #ffffff !important;  /*  I needed the !important to override bootstrap. */
+}
+.navbar-toggler {
+    background-color: #ffffff !important;  /*  I needed the !important to override bootstrap. */
+}
+
+.nav-link {
+    color: #ffffff !important;  /*  I needed the !important to override bootstrap. */
 }
 
 /* CONTAINERS */
 .container {
-    background: lightblue;
-    width: auto;
-    height: auto;
-    border-radius: 10px;
+    /* background: lightgray; */
+    margin: 20px auto;
+    height: 95vw;
 }
 
 fieldset.scheduler-border {
@@ -22,3 +35,19 @@ legend.scheduler-border {
     border: none;
     font-size: 14px;
 }
+
+.btn:hover {
+    color: yellow;
+}
+
+#footer {
+    position : relative;
+    bottom : 0;
+    height : auto;
+    width: 100%;
+    background-color: black;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+
