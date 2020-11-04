@@ -1,4 +1,4 @@
-<h3>Organization Detail</h3>
+<h3>Organization Detail <a class="btn btn-secondary btn-sm" href="/organizations">Back</a></h3>
 <form action="/organizations/<%=organization.id%>?_method=PUT" method="POST">
     <div class="form-group">
         <label for="name">Name</label>
@@ -11,7 +11,6 @@
     <input type="submit" class="btn btn-primary btn-sm" value="Save">
     <a class="btn btn-secondary btn-sm" href="/organizations/<%=organization.id%>/contacts/new">Add Contacts</a>
     <a class="btn btn-secondary btn-sm" href="/organizations/<%=organization.id%>/contacts/remove">Remove Contacts</a>
-    <a class="btn btn-secondary btn-sm" href="/organizations">Back</a>
 <form>
 
 <% if (organization.contacts.length > 0) { %>

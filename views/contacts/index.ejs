@@ -4,11 +4,11 @@
   <caption>List of contacts</caption>
   <thead>
     <tr>
-      <th scope="col">#</th>
+      <th class="d-none d-sm-table-cell" scope="col">#</th>
       <th scope="col">Name</th>
       <th scope="col">Phone</th>
-      <th scope="col">Email</th>
-      <th scope="col">Address</th>
+      <th class="d-none d-sm-table-cell" scope="col">Email</th>
+      <th class="d-none d-sm-table-cell" scope="col">Address</th>
       <th scope="col"></th>
       <th scope="col"></th>
     </tr>
@@ -19,7 +19,7 @@
         contact = contacts[i-1];
     %>
     <tr>
-      <td scope="row"><%=i%></td>
+      <td class="d-none d-sm-table-cell" scope="row"><%=i%></td>
       <td>
         <a href="/contacts/<%=contact._id%>">
           <%=contact.firstName%> <%=contact.lastName%>
@@ -28,10 +28,10 @@
       <td>
         <%=contact.phone%>
       </td>
-      <td>
+      <td class="d-none d-sm-table-cell">
         <%=contact.email%>
       </td>
-      <td>
+      <td class="d-none d-sm-table-cell">
         <%=contact.street%>, <%=contact.city%>, <%=contact.state%> <%=contact.zipcode%>
       </td>                     
       <td>
