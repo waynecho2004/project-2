@@ -1,0 +1,31 @@
+<h4>Link Categories <a class="btn btn-secondary btn-sm" href="/links/categories/new">Add</a></h4>
+
+<% if (categories.length > 0) { %>
+    
+    <% categories.forEach(category => { %>
+        <p>
+            <form action="/links/categories/<%=category.id%>?_method=DELETE" method="POST">
+                <h5><%=category.name%>
+                    <a class="btn btn-secondary btn-sm" href="/links/categories/<%=category._id%>/edit">
+                        Edit
+                    </a>
+                    <input type="submit" class="btn btn-danger btn-sm" value="DELETE">
+                </h5>
+            </form>
+        </p>
+        <p>       
+        <% if (category.links.length > 0) { %>
+            <ul>
+            <% category.links.forEach(link => { %>
+                <li>
+                    <a href="<%=link.url%>" target="_blank"><%= link.title %>
+                </li>
+            <% }) %>
+            </ul>
+        <% } %>
+        </p> 
+    <% }) %>
+    
+<% } else { %>
+    ~ No Categories ~
+<% } %>

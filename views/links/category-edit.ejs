@@ -1,0 +1,27 @@
+<h4>Category Detail <a class="btn btn-secondary btn-sm" href="/links/categories">Back</a></h4>
+<form action="/links/categories/<%=category.id%>?_method=PUT" method="POST">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input class="form-control" type="text" name="name" aria-describedby="nameHelp"  value="<%=category.name%>" required />
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea maxlength="100" class="form-control" id="description" name="description" rows="3"><%=category.description%></textarea>
+    </div> 
+    <input type="submit" class="btn btn-primary btn-sm" value="Save">
+    <a class="btn btn-secondary btn-sm" href="/links/categories/<%=category.id%>/links/new">Add Links</a>
+    <a class="btn btn-secondary btn-sm" href="/links/categories/<%=category.id%>/links/remove">Remove Links</a>
+<form>
+
+<% if (category.links.length > 0) { %>
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Links</legend>
+            <ul>
+            <% category.links.forEach(link => { %>
+                <li>
+                    <a href="<%=link.url%>" target="_blank"><%= link.title %>
+                </li>
+            <% }) %>
+            </ul>
+    </fieldset>
+<% } %>

@@ -1,0 +1,26 @@
+<h4>Category: <%=category.name%></h4>
+<form action="/links/categories/<%=category.id%>/links?_method=PUT" method="POST">
+    <% links.forEach(link => { %>
+        <input type="checkbox" name="links" value="<%=link.id%>" />
+        <label for="<%= link.title %>"><%= link.title %>  </label><br />
+    <% })%>
+    <input class="btn btn-primary btn-sm" type="submit" value="Add links" />
+    <a class="btn btn-secondary btn-sm" href="/links/categories">Back</a>
+<form>
+<% if (category.links.length > 0) { %>
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">links</legend>
+    
+        <% if (category.links.length > 0) { %>
+            <ul>
+            <% category.links.forEach(link => { %>
+                <li>
+                    <a href="<%=link.url%>" target="_blank"><%= link.title %>
+                </li>
+            <% }) %>
+            </ul>
+        <% } %>
+    
+    </fieldset>
+<% } %>
+

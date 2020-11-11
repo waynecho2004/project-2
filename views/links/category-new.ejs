@@ -1,0 +1,15 @@
+<h4>New Link Category</h4>
+<form action="/links/categories" method="POST">
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="name">Name</label>
+            <input class="form-control" type="text" name="name" placeholder="Enter name" required />
+        </div>
+        <div class="form-group col-md-12">
+            <label for="description">Description</label>
+            <textarea maxlength="100" class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>          
+    </div>                         
+    <input type="submit" class="btn btn-primary btn-sm" value="Save">
+    <a class="btn btn-secondary btn-sm" href="/links/categories">Back</a>
+<form>
