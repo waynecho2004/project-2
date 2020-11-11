@@ -73,6 +73,7 @@ app.use('/contacts', require('./controllers/contactController'));
 app.use('/organizations', require('./controllers/organizationController'));
 app.use('/users', require('./controllers/userController.js'));
 app.use('/sessions', require('./controllers/sessionController.js'));
+app.use('/links', require('./controllers/linkController.js'));
 
 //___________________
 // Routes

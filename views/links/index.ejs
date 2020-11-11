@@ -1,0 +1,44 @@
+<h4>Links <a class="btn btn-secondary btn-sm" href="/links/new">Add</a></h4>
+
+<table id="links-table" class="table">
+  <caption>List of Links</caption>
+  <thead>
+    <tr>
+      <th class="d-none d-sm-table-cell" scope="col">#</th>
+      <th scope="col">Title</th>
+      <th scope="col">Description</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    
+    <% for( let i = 1; i <= links.length; i++ ) { 
+        link = links[i-1];
+    %>
+    <tr>
+      <td class="d-none d-sm-table-cell" scope="row"><%=i%></td>
+      <td>
+        <a href="<%=link.url%>" target="_blank">
+                <%= link.title %>
+      </td>
+      <td class="d-none d-sm-table-cell">
+        <%=link.description%>
+      </td>
+      <td>
+        <a class="btn btn-secondary btn-sm" href="/links/<%=link._id%>/edit">
+          Edit
+        </a>
+      </td>      
+      <td>
+        <form action="/links/<%=link.id%>?_method=DELETE" method="POST">
+          <input type="submit" class="btn btn-danger btn-sm" value="DELETE">
+        </form>
+      </td>
+    </tr>
+  <% } %>
+
+  </tbody>
+</table>
+
+
