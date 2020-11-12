@@ -22,12 +22,13 @@ const isAuthorized = (req, res, next) => {
 
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
-    let categories = await LinkCategory.find({}).populate({
+    await LinkCategory.find().sort( { name: 'asc'}).populate({
         path: 'links',
         options: { sort: { ['title']: 1} },
-    });
-    res.render('links/category-index', {
-        categories,
+    }).exec((err, categories) => {
+        res.render('links/category-index', {
+            categories,
+        });
     });
 });
 
