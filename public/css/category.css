@@ -1,0 +1,6 @@
+/** Media Query for different platform */
+@media only screen and (min-width: 768px) {
+    main {
+        column-count: 2;
+    }
+}
