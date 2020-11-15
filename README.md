@@ -1,6 +1,6 @@
 # Wayne's Address Book
 
-An online directory to view and manage your contacts.  Click the [link](https://wcho-project2.herokuapp.com) to access
+  An online dashboard to view and manage your contacts and favorite links.  This is built with express, with Mongo as its database, Github as source control, Heroku as deployment platform.  Click the [link](https://wcho-project2.herokuapp.com) to access
 
 ## Project Links
 
@@ -9,9 +9,14 @@ An online directory to view and manage your contacts.  Click the [link](https://
 
 ## Technologies
 * Node.js
-* Mongo and Mongoose
-* Express
+* Express (7 restful routes)
+* Express EJS Layouut (or Partials)
+* Bcrypt, Sessions & Environment Variables (dotenv)
 * Boostrap 4
+* Datatable
+* Mongo and Mongoose: database (Embedded & Referenced data model)
+* Github: source control
+* Heroku: deployment
 
 ## Wireframes and Design
 [Wideframes and Data Model](https://drive.google.com/file/d/1uA2XlA6qw9415nY2JYHKJAgTgwIrOeiH/view?usp=sharing)
@@ -19,6 +24,7 @@ An online directory to view and manage your contacts.  Click the [link](https://
 ### Design Concepts
 * Model View Controller Design
 * Mobile First Design
+* Mongoose Embedded data model (Contact and Child) and Referenced data model (Organization and Contact)
 
 
 
