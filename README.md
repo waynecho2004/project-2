@@ -26,8 +26,6 @@
 * Mobile First Design
 * Mongoose Embedded data model (Contact and Child) and Referenced data model (Organization and Contact)
 
-
-
 ## User Stories and Features
 
 #### Contact:
