@@ -22,7 +22,8 @@ const isAuthorized = (req, res, next) => {
 
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
-    await LinkCategory.find().sort( { name: 'asc'}).populate({
+    console.log('linkCategoryController - index page')
+    await LinkCategory.find({type: 'link'}).sort( { name: 'asc'}).populate({
         path: 'links',
         options: { sort: { ['title']: 1} },
     }).exec((err, categories) => {
@@ -34,6 +35,7 @@ router.get('/', isAuthenticated, async (req, res) => {
 
 // New Form to enter category
 router.get('/new', isAuthenticated, (req, res) => {
+    console.log('linkCategoryController - new')
     res.render('links/category-new.ejs');
 });
 
@@ -166,6 +168,21 @@ router.delete('/:id', isAuthorized, async (req, res) => {
     await LinkCategory.findByIdAndRemove(id, (error) => {
         if (error) res.send(error);
         res.redirect('/links/categories');
+    });
+});
+
+
+// Index for Documentation
+router.get('/docs', isAuthorized, async (req, res) => {
+    console.log('documentation page')
+    await LinkCategory.find({ type: 'documentation'} ).sort( { name: 'asc'}).populate({
+        // path: 'links',
+        path: 'links',
+        options: { sort: { ['title']: 1} },
+    }).exec((err, categories) => {
+        res.render('links/category-index', {
+            categories,
+        });
     });
 });
 

@@ -13,6 +13,7 @@ const linkCategorySchema = new mongoose.Schema(
                 ref: 'Link',
             },
         ],
+        type: String,
     },
     { timestamps: true, collation: { locale: 'en', strength: 2 } }
 );
