@@ -37,7 +37,7 @@ mongoose.connect(
       useCreateIndex: true,
     },
     () => {
-      console.log('the connection with mongod is established at', mongodbURI)
+      console.log('the connection with mongod is established at', MONGODB_URI)
     }
   )
 
