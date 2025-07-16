@@ -3,177 +3,163 @@ const Organization = require('../models/organization');
 const Contact = require('../models/contact').Contact;
 
 const isAuthenticated = (req, res, next) => {
-    if (req.session.currentUser) {
-      return next()
-    } else {
-      res.redirect('/sessions/new')
-    }
+  if (req.session.currentUser) {
+    return next();
+  } else {
+    res.redirect('/sessions/new');
   }
+};
 
 const isAuthorized = (req, res, next) => {
-    if (req.session.currentUser.role === 'Admin') {
-      return next()
-    } else {
-      res.redirect('/organizations')
-    }
+  if (req.session.currentUser.role === 'Admin') {
+    return next();
+  } else {
+    res.redirect('/organizations');
+  }
 };
 
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
-    await Organization.find().sort( { name: 'asc'}).exec((err, allOrgs) => {
-        res.render('organizations/index.ejs', {
-            organizations: allOrgs,
-        })
-    })
-})
+  try {
+    const allOrgs = await Organization.find().sort({ name: 'asc' });
+    res.render('organizations/index.ejs', {
+      organizations: allOrgs,
+    });
+  } catch (error) {
+    res.send(error);
+  }
+});
 
 // New - Form to enter new organization
 router.get('/new', isAuthorized, (req, res) => {
-    res.render('organizations/new.ejs');
+  res.render('organizations/new.ejs');
 });
 
-// Create new Organiation
+// Create new Organization
 router.post('/', async (req, res) => {
-    let organization = await Organization.create(req.body);
+  try {
+    await Organization.create(req.body);
     res.redirect('/organizations');
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 // Show Organization Detail
 router.get('/:id', async (req, res) => {
-    const id = req.params.id;
-    let foundOrg = await Organization.findById(id).populate({
-        path: 'contacts',
-        options: { sort: { ['firstName']: 1} },
+  try {
+    const foundOrg = await Organization.findById(req.params.id).populate({
+      path: 'contacts',
+      options: { sort: { firstName: 1 } },
     });
-
     res.render('organizations/show.ejs', {
-        organization: foundOrg,
+      organization: foundOrg,
     });
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 // Edit page
 router.get('/:id/edit', isAuthorized, async (req, res) => {
-    const id = req.params.id;
-    let foundOrg = await Organization.findById(id).populate({
-        path: 'contacts',
-        options: { sort: { ['firstName']: 1} },
+  try {
+    const foundOrg = await Organization.findById(req.params.id).populate({
+      path: 'contacts',
+      options: { sort: { firstName: 1 } },
     });
-
     res.render('organizations/edit.ejs', {
-        organization: foundOrg,
+      organization: foundOrg,
     });
+  } catch (error) {
+    res.send(error);
+  }
 });
 
-// Update the organization to db
+// Update the organization in db
 router.put('/:id', isAuthorized, async (req, res) => {
-    const id = req.params.id;
-    const updatedOrg = req.body;
-    await Organization.findByIdAndUpdate(id, updatedOrg, (error) => {
-        if (error) res.send(error);
-        res.redirect('/organizations');
-    });
+  try {
+    await Organization.findByIdAndUpdate(req.params.id, req.body);
+    res.redirect('/organizations');
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 // Delete Organization and all associated contacts
 router.delete('/:id', isAuthorized, async (req, res) => {
-    const id = req.params.id;
-    await Organization.findByIdAndRemove(id, (error) => {
-        if (error) res.send(error);
-        res.redirect('/organizations');
-    });
+  try {
+    await Organization.findByIdAndRemove(req.params.id);
+    res.redirect('/organizations');
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 // Show contacts that can add to organization
 router.get('/:id/contacts/new', isAuthorized, async (req, res) => {
-    const id = req.params.id;
-    let allContacts = await Contact.find({});
-    let foundOrg = await Organization.findById(id).populate({
-        path: 'contacts',
-        options: { sort: { ['firstName']: 1} },
+  try {
+    const allContacts = await Contact.find({});
+    const foundOrg = await Organization.findById(req.params.id).populate({
+      path: 'contacts',
+      options: { sort: { firstName: 1 } },
     });
 
-    // filter to find available contacts not associated with this organization
-    let filtedContacts = allContacts.filter(contact => {
-        let existingContactIds = foundOrg.contacts.map(e => e._id);
-        if (!existingContactIds.includes(contact.id)) {
-            return contact;
-        }
-    });
+    const existingContactIds = foundOrg.contacts.map(e => e._id.toString());
+    const filteredContacts = allContacts.filter(contact => !existingContactIds.includes(contact._id.toString()));
 
     res.render('organizations/add-contacts.ejs', {
-        organization: foundOrg,
-        contacts: filtedContacts,
+      organization: foundOrg,
+      contacts: filteredContacts,
     });
-
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 // Add contacts to organization
 router.put('/:id/contacts', isAuthorized, async (req, res) => {
-    const orgId = req.params.id;
-    const newContacts = req.body.contacts;
-    
-    try {
-        let foundOrg = await Organization.findByIdAndUpdate(
-            orgId,
-            {
-            $push: {  // The $push will add new contacts to the list 
-                contacts: newContacts,
-            },
-            },
-            { new: true, upsert: true }
-        );
-        res.redirect(`/organizations/${foundOrg.id}`);
-    } catch (error) {
-        res.send(error);
-    }
-
+  try {
+    const newContacts = Array.isArray(req.body.contacts) ? req.body.contacts : [req.body.contacts];
+    const foundOrg = await Organization.findByIdAndUpdate(
+      req.params.id,
+      { $push: { contacts: { $each: newContacts } } },
+      { new: true }
+    );
+    res.redirect(`/organizations/${foundOrg.id}`);
+  } catch (error) {
+    res.send(error);
+  }
 });
 
-// Show contacts that can add to organization
+// Show contacts that can be removed from organization
 router.get('/:id/contacts/remove', isAuthorized, async (req, res) => {
-    const id = req.params.id;
-    let allContacts = await Contact.find({});
-    let foundOrg = await Organization.findById(id).populate({
-        path: 'contacts',
-        options: { sort: { ['firstName']: 1 } },
+  try {
+    const foundOrg = await Organization.findById(req.params.id).populate({
+      path: 'contacts',
+      options: { sort: { firstName: 1 } },
     });
-
     res.render('organizations/remove-contacts.ejs', {
-        organization: foundOrg,
+      organization: foundOrg,
     });
-
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 // Remove contacts from organization
 router.delete('/:id/contacts', isAuthorized, async (req, res) => {
-    const orgId = req.params.id;
-    const contactsForRemoval = req.body.contacts;
+  try {
+    const contactsForRemoval = Array.isArray(req.body.contacts) ? req.body.contacts : [req.body.contacts];
+    const foundOrg = await Organization.findById(req.params.id);
 
-    let foundOrg = await Organization.findById(orgId).populate({
-        path: 'contacts',
-        options: { sort: { ['firstName']: 1} },
-    });
-    let existingContactIds = foundOrg.contacts.map(e => String(e._id));
+    // Remove specified contacts by filtering
+    foundOrg.contacts = foundOrg.contacts.filter(contactId => !contactsForRemoval.includes(contactId.toString()));
 
-    // filter to find available contacts not associated with this organization
-    let filtedContacts = existingContactIds.filter(id => {
-        if (!contactsForRemoval.includes(id)) {
-            return id;
-        }
-    });
-
-    try {
-        let foundOrg = await Organization.findByIdAndUpdate(orgId);
-        foundOrg.contacts = filtedContacts;
-        foundOrg.save((error, savedOrg) => {
-            res.redirect(`/organizations/${foundOrg.id}`);
-        });
-    } catch (error) {
-        res.send(error);
-    }
-
-
+    await foundOrg.save();
+    res.redirect(`/organizations/${foundOrg.id}`);
+  } catch (error) {
+    res.send(error);
+  }
 });
-
 
 module.exports = router;
