@@ -2,7 +2,7 @@
   "name": "project-2",
   "version": "1.0.0",
   "engines": {
-    "node": "14.11.0"
+    "node": "22.15.0" 
   },
   "description": "",
   "main": "server.js",
@@ -23,13 +23,13 @@
   },
   "homepage": "https://github.com/waynecho2004/project-2#readme",
   "dependencies": {
-    "bcrypt": "^5.0.0",
-    "dotenv": "^8.2.0",
-    "ejs": "^3.1.5",
-    "express": "^4.17.1",
-    "express-ejs-layouts": "^2.5.0",
-    "express-session": "^1.17.1",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
+    "express": "^4.19.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.3",
     "method-override": "^3.0.0",
-    "mongoose": "^5.10.11"
+    "mongoose": "^8.4.2"
   }
 }
