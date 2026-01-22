@@ -1,6 +1,14 @@
 /* General */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background: white;
+    display: flex;
+    flex-direction: column;
 }
 /* navbar */
 .navbar-custom { 
@@ -26,7 +34,7 @@ body {
 .container {
     /* background: lightgray; */
     margin: 5px auto;
-    height: 95vw;
+    flex: 1 0 auto;
 }
 
 fieldset.scheduler-border {
@@ -46,14 +54,16 @@ legend.scheduler-border {
 }
 
 #footer {
-    position : relative;
-    bottom : 0;
-    height : auto;
+    position: relative;
+    bottom: 0;
+    height: auto;
     width: 100%;
     background-color: black;
     color: white;
     padding: 20px;
     text-align: center;
+    flex-shrink: 0;
+    margin-top: auto;
   }
 
 @media (max-width: 480px) {
