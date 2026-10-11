@@ -53,11 +53,14 @@ connectDB();
 //___________________
 //Middleware
 //___________________
+const WEEK_MS = 1000 * 60 * 60 * 24 * 7;
+
 app.use(
   session({
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: { maxAge: WEEK_MS },
   })
 );
 app.use(express.static("public"));

@@ -20,8 +20,11 @@ router.post('/', async (req, res) => {
 
     const passwordMatch = await bcrypt.compare(req.body.password, foundUser.password);
     if (passwordMatch) {
-      req.session.currentUser = foundUser;
-      console.log(foundUser.role);
+      req.session.currentUser = {
+        _id: foundUser._id,
+        username: foundUser.username,
+        role: foundUser.role,
+      };
       return res.redirect('/contacts');
     } else {
       return res.send('<a href="/">Password does not match</a>');
