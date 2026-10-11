@@ -1,0 +1,24 @@
+<form method="GET" action="<%= list.basePath %>" class="form-inline mb-3">
+  <label class="sr-only" for="list-search">Search</label>
+  <input id="list-search" type="search" name="q" value="<%= list.q %>" class="form-control form-control-sm mr-2" placeholder="Search" />
+  <% if (list.sortField !== list.defaultSort) { %>
+    <input type="hidden" name="sort" value="<%= list.sortField %>" />
+  <% } %>
+  <% if (list.dir === -1) { %>
+    <input type="hidden" name="dir" value="desc" />
+  <% } %>
+  <button class="btn btn-secondary btn-sm" type="submit">Search</button>
+</form>
+<% if (list.total === 0) { %>
+  <p>~ No matches ~</p>
+<% } else { %>
+  <p>
+    <% if (list.page > 1) { %>
+      <a class="btn btn-secondary btn-sm" href="<%= list.prevHref %>">Previous</a>
+    <% } %>
+    <span class="mx-2">Page <%= list.page %> of <%= list.pages %> (<%= list.total %>)</span>
+    <% if (list.page < list.pages) { %>
+      <a class="btn btn-secondary btn-sm" href="<%= list.nextHref %>">Next</a>
+    <% } %>
+  </p>
+<% } %>

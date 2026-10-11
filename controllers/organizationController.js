@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Organization = require('../models/organization');
 const Contact = require('../models/contact').Contact;
+const { getListQuery, regexFilter, withTotals, sortHref } = require('../lib/listQuery');
 
 const isAuthenticated = (req, res, next) => {
   if (req.session.currentUser) {
@@ -21,12 +22,25 @@ const isAuthorized = (req, res, next) => {
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
   try {
-    const allOrgs = await Organization.find()
+    const listQuery = getListQuery(req.query, {
+      basePath: '/organizations',
+      defaultSort: 'name',
+      allowedSorts: ['name', 'description'],
+    });
+    const filter = regexFilter(listQuery.q, ['name', 'description']);
+    const total = await Organization.countDocuments(filter);
+    const list = withTotals(listQuery, total);
+    if (listQuery.page > list.pages) return res.redirect(list.href);
+    const organizations = await Organization.find(filter)
       .select('name description')
-      .sort({ name: 1 })
+      .sort(list.sort)
+      .skip(list.skip)
+      .limit(list.limit)
       .lean();
     res.render('organizations/index.ejs', {
-      organizations: allOrgs,
+      organizations,
+      list,
+      sortHref: (field) => sortHref(list, field),
     });
   } catch (error) {
     res.send(error);

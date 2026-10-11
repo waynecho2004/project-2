@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Link = require('../models/link');
+const { getListQuery, regexFilter, withTotals, sortHref } = require('../lib/listQuery');
 
 const isAuthenticated = (req, res, next) => {
   if (req.session.currentUser) {
@@ -31,11 +32,26 @@ router.delete('/:id', isAuthorized, async (req, res) => {
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
   try {
-    const links = await Link.find()
+    const listQuery = getListQuery(req.query, {
+      basePath: '/links',
+      defaultSort: 'title',
+      allowedSorts: ['title', 'description'],
+    });
+    const filter = regexFilter(listQuery.q, ['title', 'description', 'url']);
+    const total = await Link.countDocuments(filter);
+    const list = withTotals(listQuery, total);
+    if (listQuery.page > list.pages) return res.redirect(list.href);
+    const links = await Link.find(filter)
       .select('title url description')
-      .sort({ title: 1 })
+      .sort(list.sort)
+      .skip(list.skip)
+      .limit(list.limit)
       .lean();
-    res.render('links/index', { links });
+    res.render('links/index', {
+      links,
+      list,
+      sortHref: (field) => sortHref(list, field),
+    });
   } catch (error) {
     res.send(error);
   }

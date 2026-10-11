@@ -1,13 +1,14 @@
 <h4>Contacts <a class="btn btn-secondary btn-sm" href="/contacts/new">Add</a></h4>
+<%- include('../partials/list-controls.ejs') %>
 
-<table id="contacts-table" class="table">
+<table class="table">
   <caption>List of contacts</caption>
   <thead>
     <tr>
       <th class="d-none d-sm-table-cell" scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Phone</th>
-      <th class="d-none d-sm-table-cell" scope="col">Email</th>
+      <th scope="col"><a href="<%= sortHref('firstName') %>">Name</a></th>
+      <th scope="col"><a href="<%= sortHref('phone') %>">Phone</a></th>
+      <th class="d-none d-sm-table-cell" scope="col"><a href="<%= sortHref('email') %>">Email</a></th>
       <th class="d-none d-sm-table-cell" scope="col">Address</th>
       <th scope="col"></th>
       <th scope="col"></th>
@@ -19,7 +20,7 @@
         contact = contacts[i-1];
     %>
     <tr>
-      <td class="d-none d-sm-table-cell" scope="row"><%=i%></td>
+      <td class="d-none d-sm-table-cell" scope="row"><%= list.start + i %></td>
       <td>
         <a href="/contacts/<%=contact._id%>">
           <%=contact.firstName%> <%=contact.lastName%>

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Contact, Child } = require('../models/contact');
+const { getListQuery, regexFilter, withTotals, sortHref } = require('../lib/listQuery');
 
 const isAuthenticated = (req, res, next) => {
   if (req.session.currentUser) {
@@ -22,11 +23,27 @@ const isAuthorized = (req, res, next) => {
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
   try {
-    const allContacts = await Contact.find()
+    const listQuery = getListQuery(req.query, {
+      basePath: '/contacts',
+      defaultSort: 'firstName',
+      allowedSorts: ['firstName', 'lastName', 'phone', 'email'],
+      tieBreak: 'lastName',
+    });
+    const filter = regexFilter(listQuery.q, ['firstName', 'lastName', 'phone', 'email', 'city', 'street', 'state']);
+    const total = await Contact.countDocuments(filter);
+    const list = withTotals(listQuery, total);
+    if (listQuery.page > list.pages) return res.redirect(list.href);
+    const contacts = await Contact.find(filter)
       .select('firstName lastName phone email street city state zipcode')
-      .sort({ firstName: 1, lastName: 1 })
+      .sort(list.sort)
+      .skip(list.skip)
+      .limit(list.limit)
       .lean();
-    res.render('contacts/index.ejs', { contacts: allContacts });
+    res.render('contacts/index.ejs', {
+      contacts,
+      list,
+      sortHref: (field) => sortHref(list, field),
+    });
   } catch (error) {
     res.send(error);
   }

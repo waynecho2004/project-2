@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const LinkCategory = require('../models/linkCategory');
 const Link = require('../models/link');
+const { getListQuery, regexFilter, withTotals } = require('../lib/listQuery');
 
 const isAuthenticated = (req, res, next) => {
   if (req.session.currentUser) {
@@ -16,16 +17,22 @@ const linkListPopulate = {
   options: { sort: { title: 1 } },
 };
 
-async function findCategoriesByType(type) {
-  const categories = await LinkCategory.find({ type })
+async function findCategoriesByType(type, listQuery) {
+  const filter = Object.assign({ type }, regexFilter(listQuery.q, ['name']));
+  const total = await LinkCategory.countDocuments(filter);
+  const list = withTotals(listQuery, total);
+  if (listQuery.page > list.pages) return { redirect: list.href };
+  const categories = await LinkCategory.find(filter)
     .select('name links')
-    .sort({ name: 1 })
+    .sort(list.sort)
+    .skip(list.skip)
+    .limit(list.limit)
     .populate(linkListPopulate)
     .lean();
   categories.forEach((category) => {
     category.links = category.links || [];
   });
-  return categories;
+  return { categories, list };
 }
 
 const isAuthorized = (req, res, next) => {
@@ -40,8 +47,14 @@ const isAuthorized = (req, res, next) => {
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
   try {
-    const categories = await findCategoriesByType('link');
-    res.render('links/category-index', { categories });
+    const listQuery = getListQuery(req.query, {
+      basePath: '/links/categories',
+      defaultSort: 'name',
+      allowedSorts: ['name'],
+    });
+    const result = await findCategoriesByType('link', listQuery);
+    if (result.redirect) return res.redirect(result.redirect);
+    res.render('links/category-index', { categories: result.categories, list: result.list });
   } catch (error) {
     res.send(error);
   }
@@ -185,9 +198,16 @@ router.delete('/:id', isAuthorized, async (req, res) => {
 // Index for Documentation
 router.get('/docs', isAuthorized, async (req, res) => {
     try {
-        const categories = await findCategoriesByType('documentation');
+        const listQuery = getListQuery(req.query, {
+            basePath: '/links/categories/docs',
+            defaultSort: 'name',
+            allowedSorts: ['name'],
+        });
+        const result = await findCategoriesByType('documentation', listQuery);
+        if (result.redirect) return res.redirect(result.redirect);
         res.render('links/category-index', {
-            categories,
+            categories: result.categories,
+            list: result.list,
         });
     } catch (error) {
         console.error(error);

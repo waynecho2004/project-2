@@ -1,14 +1,15 @@
 
 
 <h4>Links <a class="btn btn-secondary btn-sm" href="/links/new">Add</a></h4>
+<%- include('../partials/list-controls.ejs') %>
 
-<table id="links-table" class="table">
+<table class="table">
   <caption>List of Links</caption>
   <thead>
     <tr>
       <th class="d-none d-sm-table-cell" scope="col">#</th>
-      <th scope="col">Title</th>
-      <th class="d-none d-sm-table-cell">Description</th>
+      <th scope="col"><a href="<%= sortHref('title') %>">Title</a></th>
+      <th class="d-none d-sm-table-cell"><a href="<%= sortHref('description') %>">Description</a></th>
       <th scope="col"></th>
       <th scope="col"></th>
     </tr>
@@ -19,7 +20,7 @@
         link = links[i-1];
     %>
     <tr>
-      <td class="d-none d-sm-table-cell" scope="row"><%=i%></td>
+      <td class="d-none d-sm-table-cell" scope="row"><%= list.start + i %></td>
       <td>
         <a href="<%=link.url%>" target="_blank">
                 <%= link.title %>

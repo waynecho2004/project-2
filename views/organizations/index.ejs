@@ -1,12 +1,13 @@
 <h4>Organizations <a class="btn btn-secondary btn-sm" href="/organizations/new">Add</a></h4>
+<%- include('../partials/list-controls.ejs') %>
 
 <table class="table">
   <caption>List of organizations</caption>
   <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th class="d-none d-sm-table-cell" scope="col">Description</th>
+      <th scope="col"><a href="<%= sortHref('name') %>">Name</a></th>
+      <th class="d-none d-sm-table-cell" scope="col"><a href="<%= sortHref('description') %>">Description</a></th>
       <th scope="col"></th>
       <th scope="col"></th>
     </tr>
@@ -16,7 +17,7 @@
       organization = organizations[i-1];
     %>        
     <tr>
-      <th scope="row"><%=i%></th>
+      <th scope="row"><%= list.start + i %></th>
       <td>
         <a href="/organizations/<%=organization._id%>">
           <%=organization.name%>
