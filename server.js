@@ -9,6 +9,7 @@ const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const expressLayouts = require("express-ejs-layouts");
 const session = require("express-session");
+const compress = require("./lib/compress");
 
 //___________________
 //Configuration
@@ -54,7 +55,13 @@ connectDB();
 //Middleware
 //___________________
 const WEEK_MS = 1000 * 60 * 60 * 24 * 7;
+const isProduction = process.env.NODE_ENV === "production";
 
+if (isProduction) {
+  app.set("view cache", true);
+}
+
+app.use(compress);
 app.use(
   session({
     secret: process.env.SECRET,
@@ -63,7 +70,9 @@ app.use(
     cookie: { maxAge: WEEK_MS },
   })
 );
-app.use(express.static("public"));
+app.use(express.static("public", {
+  maxAge: isProduction ? WEEK_MS : 0,
+}));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(methodOverride("_method"));
