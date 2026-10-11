@@ -31,7 +31,10 @@ router.delete('/:id', isAuthorized, async (req, res) => {
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
   try {
-    const links = await Link.find({});
+    const links = await Link.find()
+      .select('title url description')
+      .sort({ title: 1 })
+      .lean();
     res.render('links/index', { links });
   } catch (error) {
     res.send(error);
@@ -56,7 +59,10 @@ router.post('/', isAuthenticated, async (req, res) => {
 // Edit page
 router.get('/:id/edit', isAuthorized, async (req, res) => {
   try {
-    const foundLink = await Link.findById(req.params.id);
+    const foundLink = await Link.findById(req.params.id)
+      .select('title url description')
+      .lean();
+    if (!foundLink) return res.send('Link not found');
     res.render('links/edit.ejs', { link: foundLink });
   } catch (error) {
     res.send(error);

@@ -17,4 +17,9 @@ const linkSchema = new mongoose.Schema(
     { timestamps: true, collation: { locale: 'en', strength: 2 } }
 );
 
+linkSchema.index(
+    { title: 1 },
+    { name: 'title_1_ci', collation: { locale: 'en', strength: 2 } }
+);
+
 module.exports = mongoose.model('Link', linkSchema);

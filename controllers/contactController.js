@@ -22,7 +22,10 @@ const isAuthorized = (req, res, next) => {
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
   try {
-    const allContacts = await Contact.find().sort({ firstName: 'asc' });
+    const allContacts = await Contact.find()
+      .select('firstName lastName phone email street city state zipcode')
+      .sort({ firstName: 1, lastName: 1 })
+      .lean();
     res.render('contacts/index.ejs', { contacts: allContacts });
   } catch (error) {
     res.send(error);
@@ -37,8 +40,11 @@ router.get('/new', isAuthorized, (req, res) => {
 // Show Contact Detail
 router.get('/:id', isAuthenticated, async (req, res) => {
   try {
-    const foundContact = await Contact.findById(req.params.id);
+    const foundContact = await Contact.findById(req.params.id)
+      .select('firstName lastName phone email street city state zipcode children')
+      .lean();
     if (!foundContact) return res.send('Contact not found');
+    foundContact.children = foundContact.children || [];
     res.render('contacts/show.ejs', { contact: foundContact });
   } catch (error) {
     res.send(error);
@@ -58,8 +64,11 @@ router.post('/', isAuthorized, async (req, res) => {
 // Edit Contact Page
 router.get('/:id/edit', isAuthorized, async (req, res) => {
   try {
-    const foundContact = await Contact.findById(req.params.id);
+    const foundContact = await Contact.findById(req.params.id)
+      .select('firstName lastName phone email street city state zipcode children')
+      .lean();
     if (!foundContact) return res.send('Contact not found');
+    foundContact.children = foundContact.children || [];
     res.render('contacts/edit.ejs', { contact: foundContact });
   } catch (error) {
     res.send(error);
@@ -119,9 +128,14 @@ router.delete('/:contactId/children/:childId', isAuthorized, async (req, res) =>
 // Edit Child Form
 router.get('/:contactId/children/:childId/edit', isAuthorized, async (req, res) => {
   try {
-    const foundContact = await Contact.findById(req.params.contactId);
+    const foundContact = await Contact.findById(req.params.contactId)
+      .select('children')
+      .lean();
     if (!foundContact) return res.send('Contact not found');
-    const foundChild = foundContact.children.id(req.params.childId);
+    const foundChild = (foundContact.children || []).find(
+      (child) => String(child._id) === req.params.childId
+    );
+    if (!foundChild) return res.send('Child not found');
     res.render('contacts/edit-child.ejs', { contact: foundContact, child: foundChild });
   } catch (error) {
     res.send(error);

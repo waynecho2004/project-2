@@ -1,5 +1,5 @@
 <h4>Edit Child</h4>
-<form action="/contacts/<%=contact.id%>/children/<%=child.id%>?_method=PUT" method="POST">
+<form action="/contacts/<%=contact._id%>/children/<%=child._id%>?_method=PUT" method="POST">
     <div class="form-group">
         <label for="name">Name</label>
         <input class="form-control" type="text" name="name" value="<%= child.name %>" required />

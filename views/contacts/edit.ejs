@@ -1,5 +1,5 @@
 <h4>Contact Edit Page</h4>
-<form action="/contacts/<%=contact.id%>?_method=PUT" method="POST">
+<form action="/contacts/<%=contact._id%>?_method=PUT" method="POST">
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="firstName">First Name</label>
@@ -46,7 +46,7 @@
 
 <div class="collapse" id="addchild">
     <h4>Add Child</h4>
-    <form action="/contacts/<%=contact.id%>/children" method="POST">
+    <form action="/contacts/<%=contact._id%>/children" method="POST">
         <div class="form-group">
             <label for="name">Name</label>
             <input class="form-control" type="text" name="name" placeholder="Enter child's name" required />

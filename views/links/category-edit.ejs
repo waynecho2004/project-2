@@ -1,5 +1,5 @@
 <h4>Category Detail <a class="btn btn-secondary btn-sm" href="/links/categories">Back</a></h4>
-<form action="/links/categories/<%=category.id%>?_method=PUT" method="POST">
+<form action="/links/categories/<%=category._id%>?_method=PUT" method="POST">
     <div class="form-group">
         <label for="name">Name</label>
         <input class="form-control" type="text" name="name" aria-describedby="nameHelp"  value="<%=category.name%>" required />
@@ -13,8 +13,8 @@
         <input class="form-control" type="text" id="type" name="type" value="<%=category.type%>" required />           
     </div>        
     <input type="submit" class="btn btn-primary btn-sm" value="Save">
-    <a class="btn btn-secondary btn-sm" href="/links/categories/<%=category.id%>/links/new">Add Links</a>
-    <a class="btn btn-secondary btn-sm" href="/links/categories/<%=category.id%>/links/remove">Remove Links</a>
+    <a class="btn btn-secondary btn-sm" href="/links/categories/<%=category._id%>/links/new">Add Links</a>
+    <a class="btn btn-secondary btn-sm" href="/links/categories/<%=category._id%>/links/remove">Remove Links</a>
 <form>
 
 <% if (category.links.length > 0) { %>

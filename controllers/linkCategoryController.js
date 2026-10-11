@@ -10,6 +10,24 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
+const linkListPopulate = {
+  path: 'links',
+  select: 'title url',
+  options: { sort: { title: 1 } },
+};
+
+async function findCategoriesByType(type) {
+  const categories = await LinkCategory.find({ type })
+    .select('name links')
+    .sort({ name: 1 })
+    .populate(linkListPopulate)
+    .lean();
+  categories.forEach((category) => {
+    category.links = category.links || [];
+  });
+  return categories;
+}
+
 const isAuthorized = (req, res, next) => {
   if (req.session.currentUser.role === 'Admin') {
     return next();
@@ -21,14 +39,8 @@ const isAuthorized = (req, res, next) => {
 
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
-  console.log('linkCategoryController - index page');
   try {
-    const categories = await LinkCategory.find({ type: 'link' })
-      .sort({ name: 'asc' })
-      .populate({
-        path: 'links',
-        options: { sort: { title: 1 } },
-      });
+    const categories = await findCategoriesByType('link');
     res.render('links/category-index', { categories });
   } catch (error) {
     res.send(error);
@@ -54,10 +66,12 @@ router.post('/', isAuthenticated, async (req, res) => {
 // Edit page
 router.get('/:id/edit', isAuthorized, async (req, res) => {
   try {
-    const foundCategory = await LinkCategory.findById(req.params.id).populate({
-      path: 'links',
-      options: { sort: { title: 1 } },
-    });
+    const foundCategory = await LinkCategory.findById(req.params.id)
+      .select('name description type links')
+      .populate(linkListPopulate)
+      .lean();
+    if (!foundCategory) return res.send('Category not found');
+    foundCategory.links = foundCategory.links || [];
     res.render('links/category-edit.ejs', { category: foundCategory });
   } catch (error) {
     res.send(error);
@@ -77,17 +91,23 @@ router.put('/:id', isAuthorized, async (req, res) => {
 // Show links that can add to category
 router.get('/:id/links/new', isAuthorized, async (req, res) => {
   try {
-    const allLinks = await Link.find({});
-    const foundCategory = await LinkCategory.findById(req.params.id).populate({
-      path: 'links',
-      options: { sort: { title: 1 } },
-    });
+    const foundCategory = await LinkCategory.findById(req.params.id)
+      .select('name links')
+      .lean();
+    if (!foundCategory) return res.send('Category not found');
 
-    // filter to find available links not associated with this category
-    const existingLinkIds = foundCategory.links.map((e) => e._id.toString());
-    const filteredLinks = allLinks.filter(
-      (link) => !existingLinkIds.includes(link._id.toString())
-    );
+    const existingIds = foundCategory.links || [];
+    const [existingLinks, filteredLinks] = await Promise.all([
+      Link.find({ _id: { $in: existingIds } })
+        .select('title url')
+        .sort({ title: 1 })
+        .lean(),
+      Link.find({ _id: { $nin: existingIds } })
+        .select('title')
+        .sort({ title: 1 })
+        .lean(),
+    ]);
+    foundCategory.links = existingLinks;
 
     res.render('links/category-add-links.ejs', {
       category: foundCategory,
@@ -101,18 +121,13 @@ router.get('/:id/links/new', isAuthorized, async (req, res) => {
 // Add links to category
 router.put('/:id/links', isAuthorized, async (req, res) => {
   try {
-    const categoryId = req.params.id;
-    const newlinks = req.body.links;
-
-    await LinkCategory.findByIdAndUpdate(
-      categoryId,
-      {
-        $push: {
-          links: newlinks,
-        },
-      },
-      { new: true, upsert: true }
-    );
+    const newLinks = (Array.isArray(req.body.links) ? req.body.links : [req.body.links]).filter(Boolean);
+    if (newLinks.length > 0) {
+      await LinkCategory.updateOne(
+        { _id: req.params.id },
+        { $push: { links: { $each: newLinks } } }
+      );
+    }
 
     res.redirect('/links/categories');
   } catch (error) {
@@ -123,10 +138,16 @@ router.put('/:id/links', isAuthorized, async (req, res) => {
 // Show links that can be removed from a category
 router.get('/:id/links/remove', isAuthorized, async (req, res) => {
   try {
-    const foundCategory = await LinkCategory.findById(req.params.id).populate({
-      path: 'links',
-      options: { sort: { title: 1 } },
-    });
+    const foundCategory = await LinkCategory.findById(req.params.id)
+      .select('name links')
+      .populate({
+        path: 'links',
+        select: 'title',
+        options: { sort: { title: 1 } },
+      })
+      .lean();
+    if (!foundCategory) return res.send('Category not found');
+    foundCategory.links = foundCategory.links || [];
 
     res.render('links/category-remove-links.ejs', { category: foundCategory });
   } catch (error) {
@@ -137,23 +158,13 @@ router.get('/:id/links/remove', isAuthorized, async (req, res) => {
 // Remove links from category
 router.delete('/:id/links', isAuthorized, async (req, res) => {
   try {
-    const categoryId = req.params.id;
-    const linksForRemoval = Array.isArray(req.body.links)
-      ? req.body.links
-      : [req.body.links]; // ensure array
-
-    const foundCategory = await LinkCategory.findById(categoryId).populate({
-      path: 'links',
-      options: { sort: { title: 1 } },
-    });
-
-    const existingLinkIds = foundCategory.links.map((e) => e._id.toString());
-
-    // Filter out the links to be removed
-    const filteredLinks = existingLinkIds.filter((id) => !linksForRemoval.includes(id));
-
-    foundCategory.links = filteredLinks;
-    await foundCategory.save();
+    const linksForRemoval = (Array.isArray(req.body.links) ? req.body.links : [req.body.links]).filter(Boolean);
+    if (linksForRemoval.length > 0) {
+      await LinkCategory.updateOne(
+        { _id: req.params.id },
+        { $pull: { links: { $in: linksForRemoval } } }
+      );
+    }
 
     res.redirect('/links/categories');
   } catch (error) {
@@ -173,15 +184,8 @@ router.delete('/:id', isAuthorized, async (req, res) => {
 
 // Index for Documentation
 router.get('/docs', isAuthorized, async (req, res) => {
-    console.log('documentation page');
     try {
-        const categories = await LinkCategory.find({ type: 'documentation' })
-            .sort({ name: 'asc' })
-            .populate({
-                path: 'links',
-                options: { sort: { title: 1 } },
-            });
-
+        const categories = await findCategoriesByType('documentation');
         res.render('links/category-index', {
             categories,
         });

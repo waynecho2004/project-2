@@ -23,6 +23,8 @@ const contactSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+contactSchema.index({ firstName: 1, lastName: 1 });
+
 const Child = mongoose.model('Child', childSchema);
 const Contact = mongoose.model('Contact', contactSchema);
 

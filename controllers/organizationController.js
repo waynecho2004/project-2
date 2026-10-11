@@ -21,7 +21,10 @@ const isAuthorized = (req, res, next) => {
 // Index
 router.get('/', isAuthenticated, async (req, res) => {
   try {
-    const allOrgs = await Organization.find().sort({ name: 'asc' });
+    const allOrgs = await Organization.find()
+      .select('name description')
+      .sort({ name: 1 })
+      .lean();
     res.render('organizations/index.ejs', {
       organizations: allOrgs,
     });
@@ -48,10 +51,16 @@ router.post('/', async (req, res) => {
 // Show Organization Detail
 router.get('/:id', async (req, res) => {
   try {
-    const foundOrg = await Organization.findById(req.params.id).populate({
-      path: 'contacts',
-      options: { sort: { firstName: 1 } },
-    });
+    const foundOrg = await Organization.findById(req.params.id)
+      .select('name description contacts')
+      .populate({
+        path: 'contacts',
+        select: 'firstName lastName phone',
+        options: { sort: { firstName: 1, lastName: 1 } },
+      })
+      .lean();
+    if (!foundOrg) return res.send('Organization not found');
+    foundOrg.contacts = foundOrg.contacts || [];
     res.render('organizations/show.ejs', {
       organization: foundOrg,
     });
@@ -63,10 +72,16 @@ router.get('/:id', async (req, res) => {
 // Edit page
 router.get('/:id/edit', isAuthorized, async (req, res) => {
   try {
-    const foundOrg = await Organization.findById(req.params.id).populate({
-      path: 'contacts',
-      options: { sort: { firstName: 1 } },
-    });
+    const foundOrg = await Organization.findById(req.params.id)
+      .select('name description contacts')
+      .populate({
+        path: 'contacts',
+        select: 'firstName lastName phone',
+        options: { sort: { firstName: 1, lastName: 1 } },
+      })
+      .lean();
+    if (!foundOrg) return res.send('Organization not found');
+    foundOrg.contacts = foundOrg.contacts || [];
     res.render('organizations/edit.ejs', {
       organization: foundOrg,
     });
@@ -98,14 +113,23 @@ router.delete('/:id', isAuthorized, async (req, res) => {
 // Show contacts that can add to organization
 router.get('/:id/contacts/new', isAuthorized, async (req, res) => {
   try {
-    const allContacts = await Contact.find({});
-    const foundOrg = await Organization.findById(req.params.id).populate({
-      path: 'contacts',
-      options: { sort: { firstName: 1 } },
-    });
+    const foundOrg = await Organization.findById(req.params.id)
+      .select('name contacts')
+      .lean();
+    if (!foundOrg) return res.send('Organization not found');
 
-    const existingContactIds = foundOrg.contacts.map(e => e._id.toString());
-    const filteredContacts = allContacts.filter(contact => !existingContactIds.includes(contact._id.toString()));
+    const existingIds = foundOrg.contacts || [];
+    const [existingContacts, filteredContacts] = await Promise.all([
+      Contact.find({ _id: { $in: existingIds } })
+        .select('firstName lastName phone')
+        .sort({ firstName: 1, lastName: 1 })
+        .lean(),
+      Contact.find({ _id: { $nin: existingIds } })
+        .select('firstName lastName')
+        .sort({ firstName: 1, lastName: 1 })
+        .lean(),
+    ]);
+    foundOrg.contacts = existingContacts;
 
     res.render('organizations/add-contacts.ejs', {
       organization: foundOrg,
@@ -119,13 +143,14 @@ router.get('/:id/contacts/new', isAuthorized, async (req, res) => {
 // Add contacts to organization
 router.put('/:id/contacts', isAuthorized, async (req, res) => {
   try {
-    const newContacts = Array.isArray(req.body.contacts) ? req.body.contacts : [req.body.contacts];
-    const foundOrg = await Organization.findByIdAndUpdate(
-      req.params.id,
-      { $push: { contacts: { $each: newContacts } } },
-      { new: true }
-    );
-    res.redirect(`/organizations/${foundOrg.id}`);
+    const newContacts = (Array.isArray(req.body.contacts) ? req.body.contacts : [req.body.contacts]).filter(Boolean);
+    if (newContacts.length > 0) {
+      await Organization.updateOne(
+        { _id: req.params.id },
+        { $push: { contacts: { $each: newContacts } } }
+      );
+    }
+    res.redirect(`/organizations/${req.params.id}`);
   } catch (error) {
     res.send(error);
   }
@@ -134,10 +159,16 @@ router.put('/:id/contacts', isAuthorized, async (req, res) => {
 // Show contacts that can be removed from organization
 router.get('/:id/contacts/remove', isAuthorized, async (req, res) => {
   try {
-    const foundOrg = await Organization.findById(req.params.id).populate({
-      path: 'contacts',
-      options: { sort: { firstName: 1 } },
-    });
+    const foundOrg = await Organization.findById(req.params.id)
+      .select('name contacts')
+      .populate({
+        path: 'contacts',
+        select: 'firstName lastName',
+        options: { sort: { firstName: 1, lastName: 1 } },
+      })
+      .lean();
+    if (!foundOrg) return res.send('Organization not found');
+    foundOrg.contacts = foundOrg.contacts || [];
     res.render('organizations/remove-contacts.ejs', {
       organization: foundOrg,
     });
@@ -149,14 +180,14 @@ router.get('/:id/contacts/remove', isAuthorized, async (req, res) => {
 // Remove contacts from organization
 router.delete('/:id/contacts', isAuthorized, async (req, res) => {
   try {
-    const contactsForRemoval = Array.isArray(req.body.contacts) ? req.body.contacts : [req.body.contacts];
-    const foundOrg = await Organization.findById(req.params.id);
-
-    // Remove specified contacts by filtering
-    foundOrg.contacts = foundOrg.contacts.filter(contactId => !contactsForRemoval.includes(contactId.toString()));
-
-    await foundOrg.save();
-    res.redirect(`/organizations/${foundOrg.id}`);
+    const contactsForRemoval = (Array.isArray(req.body.contacts) ? req.body.contacts : [req.body.contacts]).filter(Boolean);
+    if (contactsForRemoval.length > 0) {
+      await Organization.updateOne(
+        { _id: req.params.id },
+        { $pull: { contacts: { $in: contactsForRemoval } } }
+      );
+    }
+    res.redirect(`/organizations/${req.params.id}`);
   } catch (error) {
     res.send(error);
   }

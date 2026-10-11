@@ -1,7 +1,7 @@
 <h4><%=organization.name%> Existing Contacts</h4>
-<form action="/organizations/<%=organization.id%>/contacts?_method=DELETE" method="POST">
+<form action="/organizations/<%=organization._id%>/contacts?_method=DELETE" method="POST">
     <% organization.contacts.forEach(contact => { %>
-        <input type="checkbox" name="contacts" value="<%=contact.id%>" />
+        <input type="checkbox" name="contacts" value="<%=contact._id%>" />
         <label for="<%= contact.firstName %>"><%= contact.firstName %> <%= contact.lastName %></label><br />
     <% })%>
     <input class="btn btn-primary btn-sm" type="submit" value="Remove Contacts" />

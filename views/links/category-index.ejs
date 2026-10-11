@@ -13,7 +13,7 @@
     
     <% categories.forEach(category => { %>
 
-        <form action="/links/categories/<%=category.id%>?_method=DELETE" method="POST">
+        <form action="/links/categories/<%=category._id%>?_method=DELETE" method="POST">
             <h5><%=category.name%>
                 <a class="btn btn-secondary btn-sm" href="/links/categories/<%=category._id%>/edit">
                     Edit

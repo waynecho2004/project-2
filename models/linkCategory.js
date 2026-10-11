@@ -18,4 +18,9 @@ const linkCategorySchema = new mongoose.Schema(
     { timestamps: true, collation: { locale: 'en', strength: 2 } }
 );
 
+linkCategorySchema.index(
+    { type: 1, name: 1 },
+    { collation: { locale: 'en', strength: 2 } }
+);
+
 module.exports = mongoose.model('LinkCategory', linkCategorySchema);
